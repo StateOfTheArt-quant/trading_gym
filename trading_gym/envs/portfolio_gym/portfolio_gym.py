@@ -39,11 +39,20 @@ class PortfolioTradingGym(gym.Env):
     
     def step(self, action):
         
+        next_observation, one_step_fwd_returns, dt, done= self.data_generator.step()
+        info ={}
+        info["dt"] =dt
+        info["one_step_fwd_returns"] = one_step_fwd_returns
+        self.experience_buffer["dt"].append(dt)
+        
+        if action is None:
+            return next_observation,None,done,info
+        
         w_t_plus = pd.Series(action, index=self.order_book_ids)
         z_t = w_t_plus - self.w_t
         u_t = z_t * self.v_t
         
-        next_observation, one_step_fwd_returns, dt, done= self.data_generator.step()
+        
         h_next = self.market_simulator.step(h=self.h_t, u=u_t, one_step_fwd_returns=one_step_fwd_returns)
         
         v_t_1 = sum(h_next)
@@ -54,18 +63,16 @@ class PortfolioTradingGym(gym.Env):
         self.v_t = v_t_1
         self.h_t = h_next
         
-        info ={}
-        info["dt"] =dt
-        info["one_step_fwd_returns"] = one_step_fwd_returns
         
-        self.experience_buffer["dt"].append(dt)
+        
+        
         self.experience_buffer["reward"].append(reward)
         if self.add_cash:
             reward_benchmark = one_step_fwd_returns.iloc[:-1].mean()
         else:
             reward_benchmark = one_step_fwd_returns.mean()
         self.experience_buffer["reward_benchmark"].append(reward_benchmark)
-        #pdb.set_trace()
+        
         return next_observation, reward, done, info   
     
     def reset(self):

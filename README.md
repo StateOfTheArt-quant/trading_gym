@@ -3,7 +3,7 @@
 
 # Philosophy
 
-**trading_gym** is designed with the idea that, in the context of quantitative trading, different data format is needed for different research task. For example, cross-sectional data is used for explain the cross-sectional variation in stock returns, time series data is used for timing strategy development,
+**trading_gym** is designed with the idea that, in the context of quantitative trading, different data format is needed for different research task. For example, cross-sectional data is used for explaining the cross-sectional variation in stock returns, time series data is used for timing strategy development,
 sequential data is used for sequencial-model, e.g. RNN and it variation algorithm. Besides, supervised learning algorithm and reinforcement learning need different data architecture.
 
 The goal of trading_gym is to provide a unified environment for supervised learning and reinforcement learning on top of reinforcement learning concepts framework.
@@ -54,6 +54,18 @@ git clone https://github.com/StateOfTheArt-quant/trading_gym.git
 cd trading_gym
 python setup.py install
 ~~~
+
+
+# Examples
+using trading_gym, we provide several examples to to display how the supervised learning and reinforcement learning can be unified under a framework.
+
+### linear regression
+linear regression is an essential algorithm in the context of quantitative trading which can be used for calculating factor returns, portfolio covariance estimation and estimated returns.
+* [how to do linear regression in trading-gym and then calculate cumulative factor returns](examples/linear_regression/01_linear_regression.md)
+
+### RNN and its variant
+
+### deep reinforcement learning
 
 # Author
 Allen Yu (yujiangallen@126.com)

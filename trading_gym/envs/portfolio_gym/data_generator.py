@@ -39,7 +39,7 @@ class DataGeneratorDF(object):
         observation = total_observation.iloc[:,:self.number_feature]
         # one_step_fwd_returns
         one_step_fwd_returns = total_observation.xs(dt, level="datetime").iloc[:,-1]
-        
+        one_step_fwd_returns.name = "returns at {}".format(dt)
         #pdb.set_trace()
         
         if self.add_cash:
