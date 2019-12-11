@@ -8,8 +8,8 @@ import pdb
 from trading_gym.envs.portfolio_gym.data_generator import DataGeneratorDF
 from trading_gym.envs.portfolio_gym.market_simulator import MarketSimulator
 
-
 sns.set(rc={'figure.figsize':(10,8.27)})
+
 
 class PortfolioTradingGym(gym.Env):
     """
@@ -25,7 +25,6 @@ class PortfolioTradingGym(gym.Env):
         self.add_cash = add_cash
         if add_cash:
             self.order_book_ids = self.order_book_ids + ["CASH"]
-        
         self.portfolio_value = portfolio_value
         
         self.data_generator = DataGeneratorDF(data_df=data_df, sequence_window=sequence_window, add_cash=add_cash)
@@ -34,19 +33,22 @@ class PortfolioTradingGym(gym.Env):
         #
         self.action_space = gym.spaces.Box(0, 1, shape=(len(self.order_book_ids),), dtype=np.float32)  # include cash
 
-        # get the observation space from the data min and max
-        self.observation_space = gym.spaces.Box(low=-np.inf, high=np.inf, shape=(len(self.order_book_ids)*sequence_window, self.data_generator.number_feature), dtype=pd.DataFrame)
+        # get the state space from the data min and max
+        if sequence_window == 1:
+            self.observation_space = gym.spaces.Box(low=-np.inf, high=np.inf, shape=(len(self.order_book_ids), self.data_generator.number_feature), dtype=np.float32)
+        else:
+            self.observation_space = gym.spaces.Box(low=-np.inf, high=np.inf, shape=(len(self.order_book_ids), sequence_window, self.data_generator.number_feature), dtype=np.float32)
     
     def step(self, action):
         
-        next_observation, one_step_fwd_returns, dt, done= self.data_generator.step()
+        next_state, one_step_fwd_returns, dt, done= self.data_generator.step()
         info ={}
         info["dt"] =dt
         info["one_step_fwd_returns"] = one_step_fwd_returns
         self.experience_buffer["dt"].append(dt)
         
         if action is None:
-            return next_observation,None,done,info
+            return next_state, None, done, info
         
         w_t_plus = pd.Series(action, index=self.order_book_ids)
         z_t = w_t_plus - self.w_t
@@ -63,18 +65,14 @@ class PortfolioTradingGym(gym.Env):
         self.v_t = v_t_1
         self.h_t = h_next
         
-        
-        
-        
         self.experience_buffer["reward"].append(reward)
         if self.add_cash:
             reward_benchmark = one_step_fwd_returns.iloc[:-1].mean()
         else:
             reward_benchmark = one_step_fwd_returns.mean()
-        self.experience_buffer["reward_benchmark"].append(reward_benchmark)
+        self.experience_buffer["reward_benchmark"].append(reward_benchmark)        
+        return next_state, reward, done, info   
         
-        return next_observation, reward, done, info   
-    
     def reset(self):
         return self._reset()
     
@@ -89,9 +87,10 @@ class PortfolioTradingGym(gym.Env):
         self.v_t = self.portfolio_value
         self.h_t = self.w_t * self.v_t
         
-        observation = self.data_generator.reset()
+        state = self.data_generator.reset()
         self.market_simulator.reset()
-        return observation
+
+        return state
     
     def render(self, mode="human"):
         df = pd.DataFrame({"reward":self.experience_buffer["reward"], "reward_benchmark": self.experience_buffer["reward_benchmark"]}, index=self.experience_buffer["dt"])

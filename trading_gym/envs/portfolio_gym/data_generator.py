@@ -24,40 +24,40 @@ class DataGeneratorDF(object):
         else:
             done = False
             
-        observation, one_step_fwd_returns = self._step(dt)
-        return observation, one_step_fwd_returns, dt, done
+        state, one_step_fwd_returns = self._step(dt)
+        return state, one_step_fwd_returns, dt, done
     
     def _step(self, dt):
         idx = self.trading_dates.index(dt)+1
         trading_dates_slice = self.trading_dates[idx - self.sequence_window: idx]
-        total_observation = self.data_df.loc[(self.order_book_ids, trading_dates_slice),:]
+        total_state = self.data_df.loc[(self.order_book_ids, trading_dates_slice),:]
         #pdb.set_trace()
         # fillna to a balanced panel data
-        total_observation = total_observation.unstack().stack(dropna=False)
+        total_state = total_state.unstack().stack(dropna=False)
         
-        # observation
-        observation = total_observation.iloc[:,:self.number_feature]
+        # state
+        state = total_state.iloc[:,:self.number_feature]
         # one_step_fwd_returns
-        one_step_fwd_returns = total_observation.xs(dt, level="datetime").iloc[:,-1]
+        one_step_fwd_returns = total_state.xs(dt, level="datetime").iloc[:,-1]
         one_step_fwd_returns.name = "returns at {}".format(dt)
         #pdb.set_trace()
         
         if self.add_cash:
             multi_index = pd.MultiIndex.from_tuples([("CASH", i) for i in trading_dates_slice])
-            df_cash = pd.DataFrame(1, index=multi_index, columns=observation.columns)
-            observation = pd.concat([observation, df_cash])
+            df_cash = pd.DataFrame(1, index=multi_index, columns=state.columns)
+            state = pd.concat([state, df_cash])
             
             one_step_fwd_returns.loc["CASH"] = self.risk_free_return
         
         
-        return observation, one_step_fwd_returns
+        return state, one_step_fwd_returns
     
     
     def reset(self):
         self.idx = self.sequence_window
         first_date = self.trading_dates[self.idx-1]
-        observation, one_step_fwd_returns = self._step(first_date)
-        return observation
+        state, one_step_fwd_returns = self._step(first_date)
+        return state
 
 
 class DataGeneratorNP(object):
@@ -90,9 +90,9 @@ class DataGeneratorNP(object):
         self.idx = self.steps + self.sequence_window                
         dt = self.trading_dates[self.idx]
         #pdb.set_trace()
-        observation = self._data[:,self.idx - self.sequence_window: self.idx, :self.number_feature-1]
+        state = self._data[:,self.idx - self.sequence_window: self.idx, :self.number_feature-1]
 
-        return observation 
+        return state 
 
 if __name__ == "__main__":
     pass
