@@ -14,7 +14,10 @@ while True:
     action  = action /action.sum()
     next_state, reward, done, info = env.step(action)
     print(next_state)
+    
     if done:
         break
+    else:
+        state = next_state
 
 

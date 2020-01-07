@@ -22,7 +22,7 @@ class Actor(nn.Module):
         x = last_vector.view(batch_size,-1)
         output = self.fc(x)
         output = self.softmax(output)
-        return output
+        return output.squeeze(0)
 
 class Critic(nn.Module):
     def __init__(self, input_size, hidden_size, action_size):
