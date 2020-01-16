@@ -38,8 +38,18 @@ class MarketSimulator(object):
             for cost in costs:   # this is a more general form, the key is the output of cost.value_expr
                 h_plus -= cost        
         h_next = one_step_fwd_returns * h_plus + h_plus
-        assert (not h_next.isnull().values.any())
-        assert (not u.isnull().values.any())
+        
+        try:
+            assert (not h_next.isnull().values.any())
+            assert (not u.isnull().values.any())
+        except Exception as e:
+            print("h:{}".format(h))
+            print("u:{}".format(u))
+            print("h_plus:{}".format(h_plus))
+            print("one_step_fwd_returns: {}".format(one_step_fwd_returns))
+            print("h_next: {}".format(h_next))
+            print("u: {}".format(u))
+            raise ValueError("error")
         return h_next
     
     def reset(self):

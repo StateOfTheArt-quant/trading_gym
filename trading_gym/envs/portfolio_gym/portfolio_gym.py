@@ -54,8 +54,15 @@ class PortfolioTradingGym(gym.Env):
         z_t = w_t_plus - self.w_t
         u_t = z_t * self.v_t
         
-        
-        h_next = self.market_simulator.step(h=self.h_t, u=u_t, one_step_fwd_returns=one_step_fwd_returns)
+        try:
+            h_next = self.market_simulator.step(h=self.h_t, u=u_t, one_step_fwd_returns=one_step_fwd_returns)
+        except Exception:
+            print("dt:{}".format(dt))
+            print("action:{}".format(action))
+            print("self.w_t:{}".format(self.w_t))
+            print("w_t_plus :{}".format(w_t_plus))
+            print("v_t {}, u_t:{}".format(self.v_t, u_t))
+            raise ValueError("eeee")
         
         v_t_1 = sum(h_next)
         reward = (v_t_1 - self.v_t)/self.v_t

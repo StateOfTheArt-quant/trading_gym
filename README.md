@@ -15,7 +15,7 @@ As such, the trading_gym has been written with a few philosophical goals in mind
 * Easier use for sequencial and non-sequencial data architecture
 * low-level data architecture to faciliate customised preprocessing
 
-trading_gum is attempt to remove the boundary between supervised learing and reinforcement learning, and want researcher who don't do finacial research for a living to be able to use our APIs.
+trading_gym is attempt to remove the boundary between supervised learing and reinforcement learning, and want researcher who don't do finacial research for a living to be able to use our APIs.
 
 # Example
 ~~~
