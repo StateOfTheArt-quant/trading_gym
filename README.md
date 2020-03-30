@@ -19,8 +19,10 @@ trading_gym is attempt to remove the boundary between supervised learing and rei
 
 # Example
 ~~~
-order_book_ids = ["000001.XSHE","600000.XSHG"]
-mock_data = create_mock_data(order_book_ids=order_book_ids, start_date="2019-01-01", end_date="2019-06-11")
+from trading_gym.utils.data.toy import create_toy_data
+from trading_gym.envs import PortfolioTradingGym
+
+mock_data = create_toy_data(order_book_ids_number=2, feature_number=3, start="2019-01-01", end="2019-06-11")
 env = PortfolioTradingGym(data_df=mock_data, sequence_window=3, add_cash=True)
     
 state = env.reset()
@@ -66,6 +68,14 @@ linear regression is an essential algorithm in the context of quantitative tradi
 ### RNN and its variant
 
 ### deep reinforcement learning
+* [how to use DDPG algorithm for portfolio optimization](examples/reinforcement_learning/ddpg/main.py)
+* [how to use PPO algorithm for portfolio optimization](examples/reinforcement_learning/ppo/main.py)
+
+### minimal portfolio backtest engine
+trading_gym can also serve as a minimal backtest engine for portfolio investment. Benchmark strategies can be easily implemented and backtest by it. 
+* [buy and hold strategy](examples/benchmark_strategy_for_portfolio_management/buy_and_hold.py)
+* [weight rebalance strategy](examples/benchmark_strategy_for_portfolio_management/weight_rebalance.py)
+* [risk parity strategy](examples/benchmark_strategy_for_portfolio_management/risk_parity_strategy.py)
 
 # Author
 Allen Yu (yujiangallen@126.com)
@@ -73,4 +83,4 @@ Allen Yu (yujiangallen@126.com)
 # License
 This project following Apache 2.0 License as written in LICENSE file
 
-Copyright 2018 Allen Yu, StateOfTheArt.quant
+Copyright 2020 Allen Yu, StateOfTheArt.quant
