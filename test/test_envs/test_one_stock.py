@@ -6,7 +6,7 @@ from trading_gym.utils.data.toy import create_toy_data
 
 def test_one_stock():
 
-    order_book_ids_num = 2
+    order_book_ids_num = 1
     order_book_ids = ["000{}.XSHE".format(order_book_ids_num)]
     mock_data = create_toy_data(order_book_ids_number=order_book_ids_num, feature_number=3, start="2019-04-01", end="2019-5-5", random_seed=1)
     print(mock_data)
