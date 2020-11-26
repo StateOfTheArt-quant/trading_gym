@@ -41,7 +41,7 @@ def test_one_stock():
         else:
             np.testing.assert_almost_equal(portfolio_reward[i], info["one_step_fwd_returns"][1], decimal=4)
 
-    return portfolio_reward[-1]
+    return actionlist, portfolio_reward[-1]
 
 
 def test_one_stock_specificly():
@@ -77,6 +77,6 @@ def test_one_stock_specificly():
 
 
 if __name__ == "__main__":
-    #print(test_one_stock())
+    print(test_one_stock())
     print(test_one_stock_specificly())
 
