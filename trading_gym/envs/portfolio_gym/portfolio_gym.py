@@ -66,7 +66,6 @@ class PortfolioTradingGym(gym.Env):
         
         v_t_1 = sum(h_next)
         reward = (v_t_1 - self.v_t)/self.v_t
-        
         # update
         self.w_t = h_next / sum(h_next)
         self.v_t = v_t_1
@@ -78,7 +77,7 @@ class PortfolioTradingGym(gym.Env):
         else:
             reward_benchmark = one_step_fwd_returns.mean()
         self.experience_buffer["reward_benchmark"].append(reward_benchmark)        
-        return next_state, reward, done, info   
+        return next_state, reward, done, info, self.h_t
         
     def reset(self):
         return self._reset()
