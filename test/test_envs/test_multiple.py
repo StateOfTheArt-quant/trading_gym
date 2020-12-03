@@ -1,4 +1,3 @@
-import unittest
 import pandas as pd
 import numpy as np
 from trading_gym.envs.portfolio_gym.portfolio_gym import PortfolioTradingGym
@@ -13,7 +12,6 @@ def create_mock_data(order_book_ids, start_date="2019-01-01", end_date="2022-01-
                              columns=["feature1", "feature2", "feature3", "returns"])
     mock_data["returns"] = mock_data["returns"] / 100  # 当期收益率
     mock_data["returns"] = round(mock_data["returns"], 4)
-    print(mock_data["returns"])
     return mock_data
 
 
@@ -28,7 +26,7 @@ def test_positive():
     orderlistb = [0.5, 0.1, 0.7, 0.0, 1.0, 0.0, 0.6, 0.2]
     for i in range(len(orderlista)):
         next_state, reward, done, info = env.step([orderlista[i], orderlistb[i], 0])
-        h_t_list.append(info["portfolio"])
+        h_t_list.append(info["h_t"])
     '''
     000001.XSHE    2019-01-01    0.0219
                    2019-01-02   -0.0103
