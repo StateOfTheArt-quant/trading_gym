@@ -53,7 +53,7 @@ class PortfolioTradingGym(gym.Env):
         w_t_plus = pd.Series(action, index=self.order_book_ids)
         z_t = w_t_plus - self.w_t
         u_t = z_t * self.v_t
-        
+
         try:
             h_next = self.market_simulator.step(h=self.h_t, u=u_t, one_step_fwd_returns=one_step_fwd_returns)
         except Exception:
@@ -63,12 +63,12 @@ class PortfolioTradingGym(gym.Env):
             print("w_t_plus :{}".format(w_t_plus))
             print("v_t {}, u_t:{}".format(self.v_t, u_t))
             raise ValueError("eeee")
-        
+
+        info["h_t"] = h_next
         v_t_1 = sum(h_next)
         reward = (v_t_1 - self.v_t)/self.v_t
-        
         # update
-        self.w_t = h_next / sum(h_next)
+        self.w_t = h_next / sum(h_next) # that's how NaN comes from
         self.v_t = v_t_1
         self.h_t = h_next
         
@@ -78,7 +78,7 @@ class PortfolioTradingGym(gym.Env):
         else:
             reward_benchmark = one_step_fwd_returns.mean()
         self.experience_buffer["reward_benchmark"].append(reward_benchmark)        
-        return next_state, reward, done, info   
+        return next_state, reward, done, info
         
     def reset(self):
         return self._reset()
