@@ -53,7 +53,7 @@ class PortfolioTradingGym(gym.Env):
         w_t_plus = pd.Series(action, index=self.order_book_ids)
         z_t = w_t_plus - self.w_t
         u_t = z_t * self.v_t
-        
+
         try:
             h_next = self.market_simulator.step(h=self.h_t, u=u_t, one_step_fwd_returns=one_step_fwd_returns)
         except Exception:
@@ -64,7 +64,7 @@ class PortfolioTradingGym(gym.Env):
             print("v_t {}, u_t:{}".format(self.v_t, u_t))
             raise ValueError("eeee")
 
-        info["portfolio"] = h_next
+        info["h_t"] = h_next
         v_t_1 = sum(h_next)
         reward = (v_t_1 - self.v_t)/self.v_t
         # update
