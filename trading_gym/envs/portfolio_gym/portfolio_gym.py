@@ -18,7 +18,7 @@ class PortfolioTradingGym(gym.Env):
     metadata = {'render.modes': ['human', 'ansi']}
     
     
-    def __init__(self, data_df, sequence_window=5, portfolio_value=1000000, add_cash=False):
+    def __init__(self, data_df, sequence_window=5, portfolio_value=1000000, add_cash=False, costs=[]):
         
         self.order_book_ids = list(data_df.index.levels[0])
         self.number_order_book_ids = len(self.order_book_ids)
@@ -28,7 +28,7 @@ class PortfolioTradingGym(gym.Env):
         self.portfolio_value = portfolio_value
         
         self.data_generator = DataGeneratorDF(data_df=data_df, sequence_window=sequence_window, add_cash=add_cash)
-        self.market_simulator = MarketSimulator()   
+        self.market_simulator = MarketSimulator(costs=costs)   
         
         #
         self.action_space = gym.spaces.Box(0, 1, shape=(len(self.order_book_ids),), dtype=np.float32)  # include cash
