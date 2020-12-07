@@ -47,8 +47,8 @@ class MarketSimulator(object):
             h_plus[self.cash_key] = h[self.cash_key] + u[self.cash_key]
         '''
         cost should make effort in u rather than cash, based on the actual fact.
-        possible solution:
-         u[self.cash_key] = - sum(u[u.index != self.cash_key])  
+        possible solution:  
+         h_plus[self.cash_key] = sum(h_plus) - sum(h_plus[u.index != self.cash_key]) - sum(costs)
          for cost in costs:
              h_plus -= cost  
         '''
