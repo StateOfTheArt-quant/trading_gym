@@ -17,6 +17,6 @@ class TCostModel(AbstractCost):
     def value_expr(self, h_plus, u):
         self.tmp_tcosts = np.abs(u) * self.half_spread
         if self.cash_key in u.index:
-            self.tmp_tcost[self.cash_key] = 0
+            self.tmp_tcosts[self.cash_key] = 0
         return self.tmp_tcosts
     
