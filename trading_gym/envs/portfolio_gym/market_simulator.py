@@ -13,8 +13,8 @@ class MarketSimulator(object):
         if costs is None:
             costs = []
         self.cash_key = cash_key
-        # for cost in costs:
-        #     assert isinstance(cost, AbstractCost)
+        for cost in costs:
+            assert isinstance(cost, AbstractCost)
         self.costs = costs
         
     def step(self, h, u, one_step_fwd_returns):
