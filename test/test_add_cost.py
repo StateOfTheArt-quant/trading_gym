@@ -9,7 +9,7 @@ import pdb
 np.random.seed(64)
 
 commitment_fee = TCostModel(half_spread=0.01)
-mock_data = create_toy_data(order_book_ids_number=2, feature_number=3, start="2019-01-01", end="2019-01-11")
+mock_data = create_toy_data(order_book_ids_number=2, feature_number=3, start="2019-01-01", end="2019-01-6")
 '''
 0001.XSHE      2019-01-01    0.0219
                2019-01-02   -0.0103
@@ -41,14 +41,14 @@ def test_add_cost():
     state = env.reset()
     print(state)
     action = np.array([0.6, 0.4, 0])
-    h_t_list = []
+    costs = []
     while True:
         next_state, reward, done, info = env.step(action)
-        h_t_list.append(info["h_t"])
+        costs.append(-info["h_t"][2])
         if done:
             break
-    expected_costs = ([6000, 4000], [100.566, 0.556], [31.666, 32.678])
-    print(h_t_list)
+    expected_costs = (6000+4000, 39.606+60.404, 27.009+28.009)
+    np.testing.assert_almost_equal(costs, expected_costs, decimal=0)
     '''
     When sum of weights equals to 1, cash will be negative sum of costs today.
     '''
@@ -66,12 +66,13 @@ def test_add_cost_cash_false():
         if done:
             break
     expected_costs = ([1000, 1000], [42.4552, 42.4552], [32.448, 32.448])
-    print(h_t_list)
+    expected_h_t = ([597987.7, 391578.6], [591378.32, 399660.33], [598098.82, 395193.86])
+    np.testing.assert_almost_equal(h_t_list, expected_h_t, decimal=1)
     '''
     The first-day cost is incorrect due to initialization in portfolio_gym.reset
     '''
 
 
 if __name__ == "__main__":
-    #test_add_cost()
-    test_add_cost_cash_false()
+    test_add_cost()
+    #test_add_cost_cash_false()
