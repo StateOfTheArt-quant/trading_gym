@@ -26,7 +26,7 @@ class MarketSimulator(object):
         """
         h_plus = h + u
         costs = [cost.value_expr(h_plus=h_plus, u=u) for cost in self.costs]
-        
+
         for cost in costs: # cost is a pd.Series
             assert (not pd.isnull(cost).any())
             assert (not np.isinf(cost).any())
@@ -36,9 +36,9 @@ class MarketSimulator(object):
             h_plus[self.cash_key] = h[self.cash_key] + u[self.cash_key]
         else:
             for cost in costs:   # this is a more general form, the key is the output of cost.value_expr
-                h_plus -= cost        
+                h_plus -= cost
         h_next = one_step_fwd_returns * h_plus + h_plus
-        
+
         try:
             assert (not h_next.isnull().values.any())
             assert (not u.isnull().values.any())

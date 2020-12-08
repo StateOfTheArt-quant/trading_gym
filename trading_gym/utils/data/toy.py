@@ -16,7 +16,7 @@ def create_toy_data(order_book_ids_number, feature_number, start, end, frequency
     column_names += ["returns"]
     
     toy_data = pd.DataFrame(np.random.randn(number, feature_number+1), index=multi_index, columns=column_names)
-    toy_data["returns"] = toy_data["returns"]/100
+    toy_data["returns"] = round(toy_data["returns"]/100, 4)
     return toy_data
     
     
