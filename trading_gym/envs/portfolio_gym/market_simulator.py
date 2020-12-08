@@ -31,12 +31,12 @@ class MarketSimulator(object):
         h_plus = h + u
         costs = [cost.value_expr(h_plus=h_plus, u=u) for cost in self.costs]
 
-        for cost in costs[0]: # cost is a pd.Series
-            assert (not pd.isnull(cost))
-            assert (not np.isinf(cost))
+        for cost in costs: # cost is a pd.Series
+            assert (not pd.isnull(cost).any())
+            assert (not np.isinf(cost).any())
         
         if self.cash_key in h.index:
-            u[self.cash_key] = - sum(u[u.index != self.cash_key]) - sum(sum(costs))
+            u[self.cash_key] = - sum(u[u.index != self.cash_key]) - sum([sum(cost) for cost in costs])
             h_plus[self.cash_key] = h[self.cash_key] + u[self.cash_key]
         else:
             for cost in costs:   # this is a more general form, the key is the output of cost.value_expr
