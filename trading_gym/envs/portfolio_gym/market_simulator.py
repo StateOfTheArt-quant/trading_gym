@@ -29,40 +29,20 @@ class MarketSimulator(object):
             u: trades vector with simulated cash balance
         """
         h_plus = h + u
-        #costs = [cost.value_expr(h_plus=h_plus, u=u) for cost in self.costs]
-        print(u,h)
-        tmp_tcosts = np.abs(u) * 0.001
-        if "cash" in u.index:
-            tmp_tcosts["cash"] = 0
-        costs = tmp_tcosts
-        print(costs)
-        pdb.set_trace()
+        costs = [cost.value_expr(h_plus=h_plus, u=u) for cost in self.costs]
 
-        for cost in costs: # cost is a pd.Series
+        for cost in costs[0]: # cost is a pd.Series
             assert (not pd.isnull(cost))
             assert (not np.isinf(cost))
         
         if self.cash_key in h.index:
-            u[self.cash_key] = - sum(u[u.index != self.cash_key]) - sum(costs)
+            u[self.cash_key] = - sum(u[u.index != self.cash_key]) - sum(sum(costs))
             h_plus[self.cash_key] = h[self.cash_key] + u[self.cash_key]
-        '''
-        cost should make effort in u rather than cash, based on the actual fact.
-        possible solution:  
-         h_plus[self.cash_key] = sum(h_plus) - sum(h_plus[u.index != self.cash_key]) - sum(costs)
-         for cost in costs:
-             h_plus -= cost  
-        '''
         else:
             for cost in costs:   # this is a more general form, the key is the output of cost.value_expr
                 h_plus -= cost
-        '''
-        in portfolio_gym:
-         self.w_t = pd.Series([1.]*self.number_order_book_ids, index=self.order_book_ids)/self.number_order_book_ids
-        when add_cash is False.
-        It makes the first-day cost incorrect.
-        '''
         h_next = one_step_fwd_returns * h_plus + h_plus
-        
+
         try:
             assert (not h_next.isnull().values.any())
             assert (not u.isnull().values.any())
