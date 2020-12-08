@@ -3,15 +3,11 @@
 import pandas as pd
 import numpy as np
 from trading_gym.interface import AbstractCost
-from trading_gym.envs.portfolio_gym.costs import TCostModel
-import pdb
 
 
 class MarketSimulator(object):
     
     def __init__(self, costs=[], cash_key="CASH"):
-        if costs is None:
-            costs = []
         self.cash_key = cash_key
         for cost in costs:
             assert isinstance(cost, AbstractCost)
